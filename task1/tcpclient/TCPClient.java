@@ -10,7 +10,7 @@ public class TCPClient {
     public byte[] askServer(String hostname, int port, byte [] toServerBytes) throws IOException {
 
         /*Arrays that stores the information we send and recive*/
-        byte[] fromUserBuffer = new byte[STATIC_BUFFER_SIZE]; 
+        //byte[] fromUserBuffer = new byte[STATIC_BUFFER_SIZE]; 
         byte[] fromServerBuffer = new byte[STATIC_BUFFER_SIZE];
         ByteArrayOutputStream bs = new ByteArrayOutputStream(); //dynamic array
 
@@ -27,9 +27,7 @@ public class TCPClient {
             bs.write(fromServerBuffer, 0, fromUserLength);
         } while(inputStream.read() != -1);
         
-        fromUserBuffer = bs.toByteArray();
-
         clientSocket.close();
-        return fromUserBuffer;
+        return bs.toByteArray();
     }
 }
