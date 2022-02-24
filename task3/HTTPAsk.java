@@ -73,11 +73,9 @@ public class HTTPAsk {
             if (!(serverStatus.contains("HTTP/1.1 400 Bad Request"))) { //if connection is successfull
 				try {
 					byte[] toServerBytes = dataContentString.getBytes("UTF-8");
-
 					TCPClient tcpClient = new TCPClient(shutdown, timeout, limit);
 					byte[] result = tcpClient.askServer(host, port, toServerBytes);
 					connectionSocket.getOutputStream().write(result);
-
 				} catch (IOException ex) {
 					serverStatus = ("HTTP/1.1 404 Not Found \r\n"); //if no hostname or hostname not recognized
 					outputStream.write(serverStatus.getBytes("UTF-8"));
