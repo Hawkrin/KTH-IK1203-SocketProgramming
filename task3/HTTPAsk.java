@@ -63,7 +63,7 @@ public class HTTPAsk {
                         }
                     } 
                     else { serverStatus = ("HTTP/1.1 400 Bad Request \r\n"); } //if ask is removed 
-                }catch(NumberFormatException ex){}
+                } catch(NumberFormatException ex){}
 
                 if (stringDecoder.contains("\n")) { break; }
 
