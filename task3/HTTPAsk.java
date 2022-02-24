@@ -66,8 +66,6 @@ public class HTTPAsk {
                 } catch(NumberFormatException ex){}
 
                 if (stringDecoder.contains("\n")) { break; }
-
-                fromClientLength = inputStream.read(fromClientBuffer);   
             }
 
             if (!(serverStatus.contains("HTTP/1.1 400 Bad Request"))) { //if connection is successfull
