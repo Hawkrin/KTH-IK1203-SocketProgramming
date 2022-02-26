@@ -3,11 +3,11 @@ import tcpclient.TCPClient;
 import java.io.*;
 
 public class HTTPAsk {
-    TCPClient tcpClient = new TCPClient();
     private static int STATIC_BUFFER_SIZE = 1024;
     private static boolean shutdown = false;
     private static Integer timeout = null;
     private static Integer limit = null;
+    TCPClient tcpClient = new TCPClient(shutdown, timeout, limit);
     
     public static void main( String[] args) throws IOException {
         String host = null;
@@ -17,7 +17,7 @@ public class HTTPAsk {
         String stringDecoder = "";
         byte[] fromClientBuffer = new byte[STATIC_BUFFER_SIZE];
 
-        final ServerSocket serverSocket = new ServerSocket(8888);
+        final ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
         System.out.println("Listening for connection on port " + serverSocket);
 
         while(true) {
@@ -62,7 +62,10 @@ public class HTTPAsk {
                             }
                         }
                     } 
-                    else { serverStatus = ("HTTP/1.1 400 Bad Request \r\n"); } //if ask is removed 
+                    else {  //if ask is removed
+                        serverStatus = ("HTTP/1.1 400 Bad Request \r\n");
+                        outputStream.write(serverStatus.getBytes("UTF-8")); 
+                    }
                 } catch(NumberFormatException ex){}
 
                 if (stringDecoder.contains("\n")) { break; }
@@ -73,7 +76,7 @@ public class HTTPAsk {
 					byte[] toServerBytes = dataContentString.getBytes("UTF-8");
 					TCPClient tcpClient = new TCPClient(shutdown, timeout, limit);
 					byte[] result = tcpClient.askServer(host, port, toServerBytes);
-					connectionSocket.getOutputStream().write(result);
+					outputStream.write(result);
 				} catch (IOException ex) {
 					serverStatus = ("HTTP/1.1 404 Not Found \r\n"); //if no hostname or hostname not recognized
 					outputStream.write(serverStatus.getBytes("UTF-8"));
