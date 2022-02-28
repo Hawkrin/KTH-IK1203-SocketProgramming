@@ -61,11 +61,9 @@ public class HTTPAsk {
                                 timeout = Integer.parseInt(stringSplitter[i + 1]);
                             }
                         }
+                        outputStream.write(serverStatus.getBytes("UTF-8"));
                     } 
-                    else {  //if ask is removed
-                        serverStatus = ("HTTP/1.1 400 Bad Request \r\n");
-                        outputStream.write(serverStatus.getBytes("UTF-8")); 
-                    }
+                    else { serverStatus = ("HTTP/1.1 400 Bad Request \r\n"); } // if ask is removed
                 } catch(NumberFormatException ex){}
 
                 if (stringDecoder.contains("\n")) { break; }
