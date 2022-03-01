@@ -10,3 +10,6 @@ Learning outcome:
 #Task3
 - Read and analyse an HTTP GET request, and extract a query string from it. 
 - Compose and return a valid HTTP response.
+
+#Task4
+- Use Java threading to implement a concurrent server that can handle many clients at the same time. 
