@@ -8,6 +8,7 @@ public class MyRunnable implements Runnable {
     private static Integer timeout = null;
     private static Integer limit = null;
     private Socket connectionSocket;
+    
 
     public MyRunnable (Socket connectionSocket) {
         this.connectionSocket = connectionSocket;
@@ -17,6 +18,7 @@ public class MyRunnable implements Runnable {
     public void run() {
         try {
             connectionSocket.setSoTimeout(2000);
+            System.out.println("Connected");
             
             String host = null;
             int port = 0;
@@ -28,16 +30,14 @@ public class MyRunnable implements Runnable {
             InputStream inputStream = connectionSocket.getInputStream(); //reads the input data
             OutputStream outputStream = connectionSocket.getOutputStream(); //write the output data
 
-            String validConnection = "HTTP /1.1 200 OK\r\n\r\n";
-            outputStream.write(validConnection.getBytes("UTF-8"));
             int fromClientLength = inputStream.read(fromClientBuffer);
 
             while(fromClientLength != -1) {
+
                 stringDecoder = new String(fromClientBuffer, 0, fromClientLength);
                 String[] stringSplitter = stringDecoder.split("[?&= ]", 10);
 
                 //the URL is being picked apart and the values are being extracted via a string split method.
-                try {
                     if (stringSplitter[0].equals("GET") && stringSplitter[1].equals("/ask") && stringDecoder.contains("HTTP/1.1")) {
                         serverStatus = ("HTTP/1.1 200 OK \r\n\r\n");
                         for (int i = 0; i < stringSplitter.length; i++) {
@@ -63,9 +63,7 @@ public class MyRunnable implements Runnable {
                         outputStream.write(serverStatus.getBytes("UTF-8"));
                     } 
                     else { serverStatus = ("HTTP/1.1 400 Bad Request \r\n"); } // if ask is removed
-                } catch(NumberFormatException ex){}
-
-                if (stringDecoder.contains("\n")) { break; }
+                break; 
             }
 
                 if (!(serverStatus.contains("HTTP/1.1 400 Bad Request"))) { //if connection is successfull
