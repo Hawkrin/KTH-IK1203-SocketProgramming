@@ -8,6 +8,9 @@ public class MyRunnable implements Runnable {
     private static Integer timeout = null;
     private static Integer limit = null;
     private Socket connectionSocket;
+    private static String validConnection = "HTTP/1.1 200 OK \r\n\r\n";
+    private static String error400_BadRequest = "HTTP/1.1 400 Bad Request \r\n";
+    private static String error404_NotFound = "HTTP/1.1 404 Not Found \r\n";
     
 
     public MyRunnable (Socket connectionSocket) {
@@ -39,7 +42,7 @@ public class MyRunnable implements Runnable {
 
                 //the URL is being picked apart and the values are being extracted via a string split method.
                     if (stringSplitter[0].equals("GET") && stringSplitter[1].equals("/ask") && stringDecoder.contains("HTTP/1.1")) {
-                        serverStatus = ("HTTP/1.1 200 OK \r\n\r\n");
+                        serverStatus = (validConnection);
                         for (int i = 0; i < stringSplitter.length; i++) {
                             if (stringSplitter[i].equals("hostname")) {
                                 host = stringSplitter[i + 1];
@@ -62,18 +65,18 @@ public class MyRunnable implements Runnable {
                         }
                         outputStream.write(serverStatus.getBytes("UTF-8"));
                     } 
-                    else { serverStatus = ("HTTP/1.1 400 Bad Request \r\n"); } // if ask is removed
+                    else { serverStatus = (error400_BadRequest); } // if ask is removed
                 break; 
             }
 
-                if (!(serverStatus.contains("HTTP/1.1 400 Bad Request"))) { //if connection is successfull
+                if (!(serverStatus.contains(error400_BadRequest))) { //if connection is successfull
                     try {
                         byte[] toServerBytes = dataContentString.getBytes("UTF-8");
                         TCPClient tcpClient = new TCPClient(shutdown, timeout, limit);
                         byte[] result = tcpClient.askServer(host, port, toServerBytes);
                         outputStream.write(result);
                     } catch (IOException ex) {
-                        serverStatus = ("HTTP/1.1 404 Not Found \r\n"); //if no hostname or hostname not recognized
+                        serverStatus = (error404_NotFound); //if no hostname or hostname not recognized
                         outputStream.write(serverStatus.getBytes("UTF-8"));
                     }
                 } 
